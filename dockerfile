@@ -1,5 +1,5 @@
 # از ایمیج رسمی Lua استفاده می‌کنیم
-FROM lua:5.1
+FROM lua:5.4
 
 # نصب لایبرری discordia
 RUN apt-get update && \
