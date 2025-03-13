@@ -1,5 +1,5 @@
 # Dockerfile
-FROM luvit/luvit:latest
+FROM ghcr.io/luvit/luvit:latest
 
 WORKDIR /app
 COPY . .
