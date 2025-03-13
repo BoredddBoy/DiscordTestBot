@@ -1,26 +1,16 @@
-FROM ubuntu:20.04
+# استفاده از Node.js
+FROM node:20
 
-# نصب وابستگی‌های لازم
-RUN apt-get update && apt-get install -y curl git
-
-# دانلود و نصب Luvit (با اضافه کردن هدر User-Agent برای جلوگیری از ارور 403)
-RUN curl -L -H "User-Agent: Mozilla/5.0" "https://github.com/luvit/luvit/releases/latest/download/luvit-linux" -o /usr/local/bin/luvit \
-    && chmod +x /usr/local/bin/luvit
-
-
-# نصب lit (مدیر بسته‌های Luvit)
-RUN curl -L https://raw.githubusercontent.com/luvit/lit/master/get-lit.sh | bash \
-    && mv lit /usr/local/bin/lit
-
-
-# تنظیم پوشه کاری داخل کانتینر
+# تنظیم پوشه کاری
 WORKDIR /app
 
-# کپی کردن کد پروژه به کانتینر
-COPY . .
+# کپی فایل‌ها
+COPY package*.json ./
+COPY bot.js ./
+COPY .env ./
 
-# نصب کتابخانه discordia
-RUN lit install SinisterRectus/discordia
+# نصب وابستگی‌ها
+RUN npm install
 
-# اجرای بات (فایل bot.lua باید در ریشه پروژه باشد)
-CMD ["luvit", "bot.lua"]
+# اجرای بات
+CMD ["node", "bot.js"]

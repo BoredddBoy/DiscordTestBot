@@ -1,4 +1,4 @@
-name: Run Lua Discord Bot
+name: Run Discord Bot
 
 on:
   push:
@@ -14,8 +14,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Login to GitHub Container Registry
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
+
       - name: Build Docker image
-        run: docker build -t lua-discord-bot .
+        run: docker build -t discord-bot-js .
 
       - name: Run Discord Bot
-        run: docker run --env DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }} lua-discord-bot
+        run: docker run --env DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }} discord-bot-js
