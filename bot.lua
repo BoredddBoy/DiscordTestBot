@@ -1,18 +1,24 @@
--- bot.lua
-local discordia = require('discordia')
-local client = discordia.Client()
+name: Run Lua Discord Bot
 
--- گرفتن توکن از متغیر محیطی
-local token = os.getenv("DISCORD_TOKEN")
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
-client:on('ready', function()
-    print('Logged in as '.. client.user.username)
-end)
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
 
-client:on('messageCreate', function(message)
-    if message.content == '!ping' then
-        message.channel:send('Pong!')
-    end
-end)
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-client:run('Bot ' .. token)
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t lua-discord-bot .
+
+      - name: Run Discord Bot
+        run: docker run --env DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }} lua-discord-bot
