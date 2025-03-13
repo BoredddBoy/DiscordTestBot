@@ -1,37 +1,30 @@
-name: Run Bot
+name: Discord Bot
 
 on:
   push:
     branches:
-      - main  # این اکشن هنگام پوش به شاخه اصلی اجرا میشه
+      - main
   pull_request:
     branches:
       - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # یا windows-latest، macos-latest
+    runs-on: ubuntu-latest
 
     steps:
-    # 1. چک کردن کد
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # 2. نصب وابستگی‌ها
-        - name: Set up Python
-      uses: actions/setup-python@v2
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
       with:
-        python-version: '3.10'  # یا 3.11
-
+        node-version: '14'
 
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      run: npm install
 
-    # 3. اجرای بات
     - name: Run bot
-      run: |
-        python bot.py
+      run: node bot.js
       env:
-        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # استفاده از توکن ذخیره‌شده در GitHub Secrets
+        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
